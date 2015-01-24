@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
+using System;
 using System.IO;
 
 public class VertexParser : MonoBehaviour
 {
-	const int TRI_CHUNK_SIZE = 22;
-	const int QUAD_CHUNK_SIZE = 28;
+	const int HEADER_SIZE = 256;
 
 	void Start()
 	{
-		string quadFile = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\" + "quads.txt";
-		ReadQuadCollisions(quadFile);
+		string testDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\FZeroTests";
+		string quadFile = testDirectory + "\\COLI_COURSE03,lz";
+		ReadTriangleCollisions(quadFile);
 
 		//string triangleFile = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\" + "tris.txt";
 		//ReadTriangleCollisions(triangleFile);
@@ -17,15 +18,13 @@ public class VertexParser : MonoBehaviour
 
 	void ReadTriangleCollisions(string filePath)
 	{
-		int numLines = GetNumLines(filePath);
-		int numChunks = numLines / TRI_CHUNK_SIZE;
-		print("Num Chunks: " + numChunks);
-		using (StreamReader reader = new StreamReader(File.Open(filePath, FileMode.Open)))
+		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
-			// Parse all chunks
-			for (int i = 0; i < numChunks; i++)
+			reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
+			const int testLength = 60;
+			for (int i = 0; i < testLength; i++)
 			{
-				SkipLines(reader, 4); // Skip 4 lines (unknown and normal)
+				reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
 
 				Vector3 v1 = ReadVector(reader);
 				CreateVertex(v1);
@@ -39,22 +38,20 @@ public class VertexParser : MonoBehaviour
 				Debug.DrawLine(v2, v3, Color.red, 999f);
 				Debug.DrawLine(v3, v1, Color.red, 999f);
 
-				SkipLines(reader, 9); // Skip 8 lines (unknown content)
+				reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip unknown data
 			}
 		}
 	}
 
 	void ReadQuadCollisions(string filePath)
 	{
-		int numLines = GetNumLines(filePath);
-		int numChunks = numLines / QUAD_CHUNK_SIZE;
-		print("Num Chunks: " + numChunks);
-		using (StreamReader reader = new StreamReader(File.Open(filePath, FileMode.Open)))
+		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
-			// Parse all chunks
-			for (int i = 0; i < numChunks; i++)
+			reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
+			const int testLength = 30;
+			for (int i = 0; i < testLength; i++)
 			{
-				SkipLines(reader, 4); // Skip 4 lines (unknown and normal)
+				reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
 
 				Vector3 v1 = ReadVector(reader);
 				CreateVertex(v1);
@@ -72,10 +69,45 @@ public class VertexParser : MonoBehaviour
 				Debug.DrawLine(v3, v4, Color.red, 999f);
 				Debug.DrawLine(v4, v1, Color.red, 999f);
 
-				SkipLines(reader, 12); // Skip 12 lines (unknown content)
+				reader.BaseStream.Seek(48, SeekOrigin.Current); // Skip unknown data
 			}
 		}
 	}
+
+	//void ReadQuintCollisions(string filePath)
+	//{
+	//	using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+	//	{
+	//		reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
+	//		const int testLength = 10;
+	//		for (int i = 0; i < testLength; i++)
+	//		{
+	//			reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
+
+	//			Vector3 v1 = ReadVector(reader);
+	//			CreateVertex(v1);
+
+	//			Vector3 v2 = ReadVector(reader);
+	//			CreateVertex(v2);
+	//			Debug.DrawLine(v1, v2, Color.red, 999f);
+
+	//			Vector3 v3 = ReadVector(reader);
+	//			CreateVertex(v3);
+	//			Debug.DrawLine(v2, v3, Color.red, 999f);
+
+	//			Vector3 v4 = ReadVector(reader);
+	//			CreateVertex(v4);
+	//			Debug.DrawLine(v3, v4, Color.red, 999f);
+
+	//			Vector3 v5 = ReadVector(reader);
+	//			CreateVertex(v5);
+	//			Debug.DrawLine(v4, v5, Color.red, 999f);
+	//			Debug.DrawLine(v5, v1, Color.red, 999f);
+
+	//			reader.BaseStream.Seek(54, SeekOrigin.Current); // Skip unknown data
+	//		}
+	//	}
+	//}
 
 	void CreateVertex(Vector3 position)
 	{
@@ -83,29 +115,15 @@ public class VertexParser : MonoBehaviour
 		obj.transform.position = position;
 	}
 
-	// Returns the number of lines in a text file
-	int GetNumLines(string filePath)
+	Vector3 ReadVector(BinaryReader reader)
 	{
-		var numLines = 0;
-		using (var reader = File.OpenText(filePath))
-		{
-			while (reader.ReadLine() != null)
-			{
-				numLines++;
-			}
-		}
-
-		return numLines;
+		return new Vector3(ReadSingle(reader), ReadSingle(reader), ReadSingle(reader));
 	}
 
-	Vector3 ReadVector(StreamReader reader)
+	float ReadSingle(BinaryReader reader)
 	{
-		return new Vector3(float.Parse(reader.ReadLine()), float.Parse(reader.ReadLine()), float.Parse(reader.ReadLine()));
-	}
-
-	void SkipLines(StreamReader reader, int numLines)
-	{
-		for (int j = 0; j < numLines; j++)
-			reader.ReadLine();
+		byte[] bytes = reader.ReadBytes(4);
+		Array.Reverse(bytes); // Swap endianness
+		return BitConverter.ToSingle(bytes, 0);
 	}
 }
