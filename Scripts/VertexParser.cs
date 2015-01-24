@@ -9,68 +9,62 @@ public class VertexParser : MonoBehaviour
 	void Start()
 	{
 		string testDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\FZeroTests";
-		string quadFile = testDirectory + "\\COLI_COURSE03,lz";
-		ReadTriangleCollisions(quadFile);
-
+		string filePath = testDirectory + "\\COLI_COURSE03,lz";
+		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+		{
+			reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
+			ReadTriangleChunks(reader, 6);
+			ReadQuadChunks(reader, 60);
+		}
 		//string triangleFile = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\" + "tris.txt";
 		//ReadTriangleCollisions(triangleFile);
 	}
 
-	void ReadTriangleCollisions(string filePath)
+	void ReadTriangleChunks(BinaryReader reader, int numChunks)
 	{
-		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+		for (int i = 0; i < numChunks; i++)
 		{
-			reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
-			const int testLength = 60;
-			for (int i = 0; i < testLength; i++)
-			{
-				reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
+			reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
 
-				Vector3 v1 = ReadVector(reader);
-				CreateVertex(v1);
+			Vector3 v1 = ReadVector(reader);
+			CreateVertex(v1);
 
-				Vector3 v2 = ReadVector(reader);
-				CreateVertex(v2);
-				Debug.DrawLine(v1, v2, Color.red, 999f);
+			Vector3 v2 = ReadVector(reader);
+			CreateVertex(v2);
+			Debug.DrawLine(v1, v2, Color.red, 999f);
 
-				Vector3 v3 = ReadVector(reader);
-				CreateVertex(v3);
-				Debug.DrawLine(v2, v3, Color.red, 999f);
-				Debug.DrawLine(v3, v1, Color.red, 999f);
+			Vector3 v3 = ReadVector(reader);
+			CreateVertex(v3);
+			Debug.DrawLine(v2, v3, Color.red, 999f);
+			Debug.DrawLine(v3, v1, Color.red, 999f);
 
-				reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip unknown data
-			}
+			reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip unknown data
 		}
 	}
 
-	void ReadQuadCollisions(string filePath)
+	void ReadQuadChunks(BinaryReader reader, int numChunks)
 	{
-		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
+		for (int i = 0; i < numChunks; i++)
 		{
-			reader.BaseStream.Seek(HEADER_SIZE, SeekOrigin.Begin);
-			const int testLength = 30;
-			for (int i = 0; i < testLength; i++)
-			{
-				reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
+			reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
 
-				Vector3 v1 = ReadVector(reader);
-				CreateVertex(v1);
+			Vector3 v1 = ReadVector(reader);
+			CreateVertex(v1);
 
-				Vector3 v2 = ReadVector(reader);
-				CreateVertex(v2);
-				Debug.DrawLine(v1, v2, Color.red, 999f);
+			Vector3 v2 = ReadVector(reader);
+			CreateVertex(v2);
+			Debug.DrawLine(v1, v2, Color.red, 999f);
 
-				Vector3 v3 = ReadVector(reader);
-				CreateVertex(v3);
-				Debug.DrawLine(v2, v3, Color.red, 999f);
+			Vector3 v3 = ReadVector(reader);
+			CreateVertex(v3);
+			Debug.DrawLine(v2, v3, Color.red, 999f);
 
-				Vector3 v4 = ReadVector(reader);
-				CreateVertex(v4);
-				Debug.DrawLine(v3, v4, Color.red, 999f);
-				Debug.DrawLine(v4, v1, Color.red, 999f);
+			Vector3 v4 = ReadVector(reader);
+			CreateVertex(v4);
+			Debug.DrawLine(v3, v4, Color.red, 999f);
+			Debug.DrawLine(v4, v1, Color.red, 999f);
 
-				reader.BaseStream.Seek(48, SeekOrigin.Current); // Skip unknown data
-			}
+			reader.BaseStream.Seek(48, SeekOrigin.Current); // Skip unknown data
 		}
 	}
 
