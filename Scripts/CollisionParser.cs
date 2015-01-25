@@ -9,17 +9,18 @@ public class CollisionParser : MonoBehaviour
 	void Start()
 	{
 		string testDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\FZeroTests";
-		string filePath = testDirectory + "\\COLI_COURSE05,lz";
+		string filePath = testDirectory + "\\COLI_COURSE03,lz";
 		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
 			reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about offsets table
 			int tableSize = ReadInt32(reader);
 			int tableOffset = ReadInt32(reader);
-			ReadTableEntries(reader, tableSize, tableOffset);
+			ReadMeshTable(reader, tableSize, tableOffset);
 		}
 	}
 
-	void ReadTableEntries(BinaryReader reader, int numEntries, int offset)
+	// Read table containing triangle and quad meshes
+	void ReadMeshTable(BinaryReader reader, int numEntries, int offset)
 	{
 		print("Number of Table Entries: " + numEntries);
 		print("Table Offset: " + offset);
@@ -63,9 +64,12 @@ public class CollisionParser : MonoBehaviour
 		print("Triangles Offset: " + offset);
 
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to the start of the triangles list
-		for (int i = 0; i < numTriangles; i++)
+		for (int i = 0; i < numTriangles; i++) // Each triangle entry is 88 bytes
 		{
-			reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
+			reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip unknown data
+
+			// Read normal
+			Vector3 n = ReadVector(reader);
 
 			// Read the edges of the triangle
 			Vector3 v1 = ReadVector(reader);
@@ -80,6 +84,10 @@ public class CollisionParser : MonoBehaviour
 			Debug.DrawLine(v2, v3, Color.red, 999f);
 			Debug.DrawLine(v3, v1, Color.red, 999f);
 
+			// Display normal
+			Vector3 nPos = (v1 + v2 + v3) / 3f;
+			Debug.DrawRay(nPos, n, Color.blue, 999f);
+
 			reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip unknown data
 		}
 	}
@@ -90,9 +98,12 @@ public class CollisionParser : MonoBehaviour
 		print("Quads Offset: " + offset);
 
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to the start of the quads list
-		for (int i = 0; i < numQuads; i++)
+		for (int i = 0; i < numQuads; i++) // Each quad entry is 112 bytes long
 		{
-			reader.BaseStream.Seek(16, SeekOrigin.Current); // Skip normal/unknown data
+			reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip normal/unknown data
+
+			// Read normal
+			Vector3 n = ReadVector(reader);
 
 			// Read the edges of the quad
 			Vector3 v1 = ReadVector(reader);
@@ -110,6 +121,10 @@ public class CollisionParser : MonoBehaviour
 			CreateVertex(v4);
 			Debug.DrawLine(v3, v4, Color.red, 999f);
 			Debug.DrawLine(v4, v1, Color.red, 999f);
+
+			// Display normal
+			Vector3 nPos = (v1 + v2 + v3 + v4) / 4f;
+			Debug.DrawRay(nPos, n, Color.blue, 999f);
 
 			reader.BaseStream.Seek(48, SeekOrigin.Current); // Skip unknown data
 		}
