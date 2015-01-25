@@ -6,26 +6,31 @@ public class CollisionParser : MonoBehaviour
 {
 	const int TABLE_ENTRY_SIZE = 16;
 
+	// TODO: Axis conversion?
 	void Start()
 	{
 		string testDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + "\\FZeroTests";
-		string filePath = testDirectory + "\\COLI_COURSE03,lz";
+		string filePath = testDirectory + "\\COLI_COURSE01,lz";
 		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
-			reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about offsets table
+			reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about mesh offset table
 			int tableSize = ReadInt32(reader);
 			int tableOffset = ReadInt32(reader);
 			ReadMeshTable(reader, tableSize, tableOffset);
+
+			reader.BaseStream.Seek(28, SeekOrigin.Begin); // Seek to header info about extra mesh offset table
+			int extraTableOffset = ReadInt32(reader);
+			ReadMeshExtraTable(reader, extraTableOffset);
 		}
 	}
 
 	// Read table containing triangle and quad meshes
 	void ReadMeshTable(BinaryReader reader, int numEntries, int offset)
 	{
-		print("Number of Table Entries: " + numEntries);
-		print("Table Offset: " + offset);
+		print("Number of Mesh Table Entries: " + numEntries);
+		print("Mesh Table Offset: " + offset);
 
-		int validObjectCount = 0;
+		int objectCount = 0;
 		for (int i = 0; i < numEntries; i++) // Each table entry is 16 bytes
 		{
 			reader.BaseStream.Seek(offset + (TABLE_ENTRY_SIZE * i), SeekOrigin.Begin); // Go to the current table entry
@@ -35,11 +40,34 @@ public class CollisionParser : MonoBehaviour
 			if (collisionInfoOffset != 0) // Ignore null offsets
 			{
 				ReadCollisionInfo(reader, collisionInfoOffset);
-				validObjectCount++;
+				objectCount++;
 			}
 		}
 
-		print("Number of valid objects found: " + validObjectCount);
+		print("Number of mesh objects found: " + objectCount);
+	}
+
+	// Read the other table that contains offsets to triangle and quad meshes
+	void ReadMeshExtraTable(BinaryReader reader, int offset)
+	{
+		print("Extra Mesh Table Offset: " + offset);
+
+		// Read triangle meshes
+		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to start of extra mesh table
+		reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip 36 null bytes
+		int startTriangleOffset = ReadInt32(reader);
+		int nextTriangleOffset = ReadInt32(reader);
+		int numTriangles = (nextTriangleOffset - startTriangleOffset - 28) / 88; // Remove 28 extra unknown bytes between both triangle mesh offsets
+		ReadTriangles(reader, numTriangles, startTriangleOffset);
+
+		// Read quad meshes
+		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to start of extra mesh table
+		int quadOffset = 36 + 60 + 24; // 36 null bytes, 60 offset bytes for triangle mesh section, and 24 bytes of unknown data to get to the offset for the first quad mesh
+		reader.BaseStream.Seek(quadOffset, SeekOrigin.Current); // Skip 36 null bytes
+		int startQuadOffset = ReadInt32(reader);
+		int nextQuadOffset = ReadInt32(reader);
+		int numQuads = (nextQuadOffset - startQuadOffset - 28) / 112;
+		ReadQuads(reader, numQuads, startQuadOffset);
 	}
 
 	void ReadCollisionInfo(BinaryReader reader, int offset)
@@ -100,7 +128,7 @@ public class CollisionParser : MonoBehaviour
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to the start of the quads list
 		for (int i = 0; i < numQuads; i++) // Each quad entry is 112 bytes long
 		{
-			reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip normal/unknown data
+			reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip unknown data
 
 			// Read normal
 			Vector3 n = ReadVector(reader);
