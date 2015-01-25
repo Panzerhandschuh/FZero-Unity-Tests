@@ -5,6 +5,8 @@ using System.IO;
 public class CollisionParser : MonoBehaviour
 {
 	const int TABLE_ENTRY_SIZE = 16;
+	const int TRIANGLE_ENTRY_SIZE = 88;
+	const int QUAD_ENTRY_SIZE = 112;
 
 	// TODO: Axis conversion?
 	void Start()
@@ -57,7 +59,7 @@ public class CollisionParser : MonoBehaviour
 		reader.BaseStream.Seek(36, SeekOrigin.Current); // Skip 36 null bytes
 		int startTriangleOffset = ReadInt32(reader);
 		int nextTriangleOffset = ReadInt32(reader);
-		int numTriangles = (nextTriangleOffset - startTriangleOffset - 28) / 88; // Remove 28 extra unknown bytes between both triangle mesh offsets
+		int numTriangles = (nextTriangleOffset - startTriangleOffset - 24) / TRIANGLE_ENTRY_SIZE; // Find the difference between the start triangle mesh offset and the next triangle mesh offset, subtract 24 bytes (unknown data), then divide by size of triangle entry
 		ReadTriangles(reader, numTriangles, startTriangleOffset);
 
 		// Read quad meshes
@@ -66,7 +68,7 @@ public class CollisionParser : MonoBehaviour
 		reader.BaseStream.Seek(quadOffset, SeekOrigin.Current); // Skip 36 null bytes
 		int startQuadOffset = ReadInt32(reader);
 		int nextQuadOffset = ReadInt32(reader);
-		int numQuads = (nextQuadOffset - startQuadOffset - 28) / 112;
+		int numQuads = (nextQuadOffset - startQuadOffset - 24) / QUAD_ENTRY_SIZE;
 		ReadQuads(reader, numQuads, startQuadOffset);
 	}
 
