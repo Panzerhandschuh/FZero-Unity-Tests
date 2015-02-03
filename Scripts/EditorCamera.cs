@@ -5,12 +5,12 @@ using System.Collections;
 public class EditorCamera : MonoBehaviour
 {
 	// Camera variables
-	public float scrollSpeed = 50f;
+	public float scrollSpeed = 100f;
 	public float lookSpeed = 128f;
-	public float panSpeed = 0.25f;
-	public float moveSpeed = 100f;
-	public float fastMoveSpeed = 600f;
-	public float slowMoveSpeed = 20f;
+	public float panSpeed = 1f;
+	public float moveSpeed = 200f;
+	public float fastMoveSpeed = 1000f;
+	public float slowMoveSpeed = 40f;
 	public float sensitivity = 2.5f;
 	//public float horizontalFov = 90f;
 	public float minimumY = -90f;

@@ -3,7 +3,7 @@ using System.IO;
 
 public class Spline : MonoBehaviour
 {
-	public string address;
+	public int address;
 	public int unknown1;
 	public int unknown2;
 	public int unknown3;
@@ -21,25 +21,26 @@ public class Spline : MonoBehaviour
 	{
 		GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		//GameObject end = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		obj.tag = "Spline";
 		Spline spline = obj.AddComponent<Spline>();
 
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to spline info
-		spline.address = reader.BaseStream.Position.ToString("X");
-		spline.unknown1 = CollisionParser.ReadInt32(reader);
-		spline.unknown2 = CollisionParser.ReadInt32(reader);
+		spline.address = (int)reader.BaseStream.Position;
+		spline.unknown1 = BinarySerializer.ReadInt32(reader);
+		spline.unknown2 = BinarySerializer.ReadInt32(reader);
 
-		spline.unknown3 = CollisionParser.ReadInt32(reader);
-		spline.startTangent = CollisionParser.ReadVector(reader);
-		spline.start = CollisionParser.ReadVector(reader);
+		spline.unknown3 = BinarySerializer.ReadInt32(reader);
+		spline.startTangent = BinarySerializer.ReadVector(reader);
+		spline.start = BinarySerializer.ReadVector(reader);
 
-		spline.unknown4 = CollisionParser.ReadInt32(reader);
-		spline.endTangent = CollisionParser.ReadVector(reader);
-		spline.end = CollisionParser.ReadVector(reader);
+		spline.unknown4 = BinarySerializer.ReadInt32(reader);
+		spline.endTangent = BinarySerializer.ReadVector(reader);
+		spline.end = BinarySerializer.ReadVector(reader);
 
-		spline.unknown5 = CollisionParser.ReadInt32(reader);
-		spline.unknown6 = CollisionParser.ReadInt32(reader);
-		spline.width = CollisionParser.ReadSingle(reader);
-		spline.type = CollisionParser.ReadInt32(reader);
+		spline.unknown5 = BinarySerializer.ReadInt32(reader);
+		spline.unknown6 = BinarySerializer.ReadInt32(reader);
+		spline.width = BinarySerializer.ReadSingle(reader);
+		spline.type = BinarySerializer.ReadInt32(reader);
 
 		obj.transform.position = spline.start;
 		//end.transform.position = spline.start1;
@@ -48,5 +49,25 @@ public class Spline : MonoBehaviour
 		Debug.DrawRay(spline.end, spline.endTangent, Color.white, 999f);
 
 		return spline;
+	}
+
+	public static void WriteSpline(BinaryWriter writer, Spline spline)
+	{
+		writer.BaseStream.Seek(spline.address, SeekOrigin.Begin);
+		BinarySerializer.Write(writer, spline.unknown1);
+		BinarySerializer.Write(writer, spline.unknown2);
+
+		BinarySerializer.Write(writer, spline.unknown3);
+		BinarySerializer.Write(writer, spline.startTangent);
+		BinarySerializer.Write(writer, spline.start);
+
+		BinarySerializer.Write(writer, spline.unknown4);
+		BinarySerializer.Write(writer, spline.endTangent);
+		BinarySerializer.Write(writer, spline.end);
+
+		BinarySerializer.Write(writer, spline.unknown5);
+		BinarySerializer.Write(writer, spline.unknown6);
+		BinarySerializer.Write(writer, spline.width);
+		BinarySerializer.Write(writer, spline.type);
 	}
 }
