@@ -2,15 +2,11 @@
 using System;
 using System.IO;
 
-
-
 public class CollisionParser : MonoBehaviour
 {
-	public bool readObjects;
-
-	string filePath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\FZeroTests\\COLI_COURSE03,lz";
-
-	private string filePath;
+	public bool readMeshCollisions = true;
+	public bool readObjects = true;
+	public int courseNumber = 3;
 
 	const int TABLE_ENTRY_SIZE = 16;
 	const int SPLINE_ENTRY_SIZE = 12;
@@ -18,21 +14,9 @@ public class CollisionParser : MonoBehaviour
 	const int TRIANGLE_ENTRY_SIZE = 88;
 	const int QUAD_ENTRY_SIZE = 112;
 
-
 	void Start()
 	{
-<<<<<<< HEAD:Assets/Scripts/CollisionParser.cs
-
-		if (Application.platform == RuntimePlatform.WindowsEditor){
-			filePath = "Assets\\COLI\\COLI_COURSE" + courseNumber.ToString("00") +",lz";
-
-		} else if (Application.platform == RuntimePlatform.OSXEditor){
-			filePath = "Assets/COLI/COLI_COURSE" + courseNumber.ToString("00") +",lz";
-		}
-
-
-=======
->>>>>>> parent of 1b1c68d... Uncommented mesh collision loading code:Scripts/CollisionParser.cs
+		string filePath = "Assets\\Input\\COLI_COURSE" + courseNumber.ToString("00") +",lz";
 		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
 			// Read spline data
@@ -42,10 +26,10 @@ public class CollisionParser : MonoBehaviour
 			ReadSplineTable(reader, splineTableSize, splineTableOffset);
 
 			// Read main mesh data
-			//reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about mesh offset table
-			//int tableSize = ReadInt32(reader);
-			//int tableOffset = ReadInt32(reader);
-			//ReadMeshTable(reader, tableSize, tableOffset);
+			reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about mesh offset table
+			int tableSize = BinarySerializer.ReadInt32(reader);
+			int tableOffset = BinarySerializer.ReadInt32(reader);
+			ReadMeshTable(reader, tableSize, tableOffset);
 
 			// Read extra mesh data (boost pads, heal regions, jump pads, misc collisions)
 			reader.BaseStream.Seek(28, SeekOrigin.Begin); // Seek to header info about extra mesh offset table
@@ -285,6 +269,7 @@ public class CollisionParser : MonoBehaviour
 
 	public void SaveChanges()
 	{
+		string filePath = "Assets\\Output\\COLI_COURSE" + courseNumber.ToString("00") + ",lz";
 		using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Open)))
 		{
 			GameObject[] splines = GameObject.FindGameObjectsWithTag("Spline");
