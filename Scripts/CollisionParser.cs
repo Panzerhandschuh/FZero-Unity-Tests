@@ -286,8 +286,8 @@ public class CollisionParser : MonoBehaviour
 				Spline spline = splines[i].GetComponent<Spline>();
 
 				// Track offset?
-				//spline.trackOffset1 = 50f;
-				//spline.trackOffset2 = 50f;
+				//spline.trackOffset1 += 50f;
+				//spline.trackOffset2 += 50f;
 
 				// Make tracks entirely straight?
 				//spline.unknown1 = 0f;
@@ -298,8 +298,8 @@ public class CollisionParser : MonoBehaviour
 				//spline.endTangent = Quaternion.Euler(20f, 0f, 0f) * spline.endTangent;
 
 				// Mess with CPU AI?
-				//spline.unknown5 = 200f;
-				//spline.unknown6 = 200f;
+				//spline.unknown5 += 200f;
+				//spline.unknown6 += 200f;
 
 				Spline.WriteSpline(writer, spline);
 			}

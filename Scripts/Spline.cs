@@ -4,16 +4,16 @@ using System.IO;
 public class Spline : MonoBehaviour
 {
 	public int address;
-	public float trackOffset1;
-	public float trackOffset2;
+	public float trackOffset1; // Moves the track forward/back?
+	public float trackOffset2; // Moves the track forward/back?
 	public float unknown3;
 	public Vector3 startTangent;
 	public Vector3 start;
 	public float unknown4;
 	public Vector3 endTangent;
 	public Vector3 end;
-	public float unknown5;
-	public float unknown6;
+	public float unknown5; // Messes with CPU AI
+	public float unknown6; // Messes with CPU AI
 	public float width;
 	public int type;
 
