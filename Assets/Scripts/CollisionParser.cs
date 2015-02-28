@@ -2,11 +2,15 @@
 using System;
 using System.IO;
 
+
+
 public class CollisionParser : MonoBehaviour
 {
 	public bool readMeshCollisions = true;
 	public bool readObjects = true;
 	public int courseNumber = 3;
+
+	private string filePath;
 
 	const int TABLE_ENTRY_SIZE = 16;
 	const int SPLINE_ENTRY_SIZE = 12;
@@ -14,9 +18,18 @@ public class CollisionParser : MonoBehaviour
 	const int TRIANGLE_ENTRY_SIZE = 88;
 	const int QUAD_ENTRY_SIZE = 112;
 
+
 	void Start()
 	{
-		string filePath = "Assets\\Input\\COLI_COURSE" + courseNumber.ToString("00") +",lz";
+
+		if (Application.platform == RuntimePlatform.WindowsEditor){
+			filePath = "Assets\\COLI\\COLI_COURSE" + courseNumber.ToString("00") +",lz";
+
+		} else if (Application.platform == RuntimePlatform.OSXEditor){
+			filePath = "Assets/COLI/COLI_COURSE" + courseNumber.ToString("00") +",lz";
+		}
+
+
 		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
 			// Read spline data
