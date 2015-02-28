@@ -15,8 +15,8 @@ public class Spline : MonoBehaviour
 	public float unknown5; // Messes with CPU AI, but does not affect collisions
 	public float unknown6; // Messes with CPU AI, but does not affect collisions
 	public float width; // Seems to be related to track width, but changing this doesn't seem to do anything
-	public byte flag1; // Flag for splines that are right after dives/breaks in the track (equals 1 after dives, otherwise is always 1)
-	public byte flag2; // Flag for splines that are right before dives/breaks in the track (equals 0 before dives, otherwise is always 1)
+	public byte startConnected; // Flag denoting whether or not the current spline has a connection with the previous spline (0 when there is no previous connection such as right after a dive)
+	public byte endConnected; // Flag denoting whether or not the current spline has a connection with the next spline (0 when there is no next connection such as right before a dive)
 	public byte flag3; // Always seems to be 0
 	public byte flag4; // Always seems to be 0
 
@@ -43,8 +43,8 @@ public class Spline : MonoBehaviour
 		spline.unknown5 = BinarySerializer.ReadSingle(reader);
 		spline.unknown6 = BinarySerializer.ReadSingle(reader);
 		spline.width = BinarySerializer.ReadSingle(reader);
-		spline.flag1 = reader.ReadByte();
-		spline.flag2 = reader.ReadByte();
+		spline.startConnected = reader.ReadByte();
+		spline.endConnected = reader.ReadByte();
 		spline.flag3 = reader.ReadByte();
 		spline.flag4 = reader.ReadByte();
 
@@ -76,8 +76,8 @@ public class Spline : MonoBehaviour
 		BinarySerializer.Write(writer, spline.unknown5);
 		BinarySerializer.Write(writer, spline.unknown6);
 		BinarySerializer.Write(writer, spline.width);
-		writer.Write(spline.flag1);
-		writer.Write(spline.flag2);
+		writer.Write(spline.startConnected);
+		writer.Write(spline.endConnected);
 		writer.Write(spline.flag3);
 		writer.Write(spline.flag4);
 	}
