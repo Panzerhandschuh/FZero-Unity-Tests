@@ -290,19 +290,12 @@ public class CollisionParser : MonoBehaviour
 				//spline.trackOffset2 += 50f;
 
 				// Make tracks entirely straight?
-				//spline.unknown1 = 0f;
-				//spline.unknown2 = 0f;
+				//spline.trackOffset1 = 0f;
+				//spline.trackOffset1 = 0f;
 
 				// Rotates track?
 				//spline.startTangent = Quaternion.Euler(20f, 0f, 0f) * spline.startTangent;
 				//spline.endTangent = Quaternion.Euler(20f, 0f, 0f) * spline.endTangent;
-
-				// Mess with CPU AI?
-				//spline.unknown5 += 200f;
-				//spline.unknown6 += 200f;
-
-				spline.flag1 = 0;
-				spline.flag2 = 0;
 
 				Spline.WriteSpline(writer, spline);
 			}
