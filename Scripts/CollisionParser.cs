@@ -301,6 +301,9 @@ public class CollisionParser : MonoBehaviour
 				//spline.unknown5 += 200f;
 				//spline.unknown6 += 200f;
 
+				spline.flag1 = 0;
+				spline.flag2 = 0;
+
 				Spline.WriteSpline(writer, spline);
 			}
 		}

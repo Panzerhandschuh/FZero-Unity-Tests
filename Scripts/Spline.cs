@@ -4,18 +4,21 @@ using System.IO;
 public class Spline : MonoBehaviour
 {
 	public int address;
-	public float trackOffset1; // Moves the track forward/back?
-	public float trackOffset2; // Moves the track forward/back?
+	public float trackOffset1; // Moves the track collisions forward/back?
+	public float trackOffset2; // Moves the track collisions forward/back?
 	public float unknown3;
-	public Vector3 startTangent;
-	public Vector3 start;
+	public Vector3 startTangent; // Rotating the tangent affects the collisions
+	public Vector3 start; // Changing this does not change collisions, but it affects what parts of the track kill you (maybe related to activating checkpoints)
 	public float unknown4;
-	public Vector3 endTangent;
-	public Vector3 end;
-	public float unknown5; // Messes with CPU AI
-	public float unknown6; // Messes with CPU AI
-	public float width;
-	public int type;
+	public Vector3 endTangent; // Rotating the tangent affects the collisions
+	public Vector3 end; // Changing this does not change collisions, but it affects what parts of the track kill you (maybe related to activating checkpoints)
+	public float unknown5; // Messes with CPU AI, but does not affect collisions
+	public float unknown6; // Messes with CPU AI, but does not affect collisions
+	public float width; // Seems to be related to track width, but changing this doesn't seem to do anything
+	public byte flag1; // Flag for splines that are right after dives/breaks in the track (equals 1 after dives, otherwise is always 1)
+	public byte flag2; // Flag for splines that are right before dives/breaks in the track (equals 0 before dives, otherwise is always 1)
+	public byte flag3; // Always seems to be 0
+	public byte flag4; // Always seems to be 0
 
 	public static Spline LoadSpline(BinaryReader reader, int offset)
 	{
@@ -40,8 +43,13 @@ public class Spline : MonoBehaviour
 		spline.unknown5 = BinarySerializer.ReadSingle(reader);
 		spline.unknown6 = BinarySerializer.ReadSingle(reader);
 		spline.width = BinarySerializer.ReadSingle(reader);
-		spline.type = BinarySerializer.ReadInt32(reader);
+		spline.flag1 = reader.ReadByte();
+		spline.flag2 = reader.ReadByte();
+		spline.flag3 = reader.ReadByte();
+		spline.flag4 = reader.ReadByte();
 
+		if (spline.flag4 == 1)
+			print(spline.address);
 		obj.transform.position = (spline.start + spline.end) / 2f;
 		Debug.DrawLine(obj.transform.position, spline.start, Color.green, 999f);
 		Debug.DrawLine(obj.transform.position, spline.end, Color.green, 999f);
@@ -68,6 +76,9 @@ public class Spline : MonoBehaviour
 		BinarySerializer.Write(writer, spline.unknown5);
 		BinarySerializer.Write(writer, spline.unknown6);
 		BinarySerializer.Write(writer, spline.width);
-		BinarySerializer.Write(writer, spline.type);
+		writer.Write(spline.flag1);
+		writer.Write(spline.flag2);
+		writer.Write(spline.flag3);
+		writer.Write(spline.flag4);
 	}
 }
