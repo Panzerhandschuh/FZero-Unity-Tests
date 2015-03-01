@@ -297,6 +297,10 @@ public class CollisionParser : MonoBehaviour
 				//spline.startTangent = Quaternion.Euler(20f, 0f, 0f) * spline.startTangent;
 				//spline.endTangent = Quaternion.Euler(20f, 0f, 0f) * spline.endTangent;
 
+				// Connect gaps (seems to only affect checkpoint system loading the player right on the edge of gaps)
+				//spline.startConnected = 1;
+				//spline.endConnected = 1;
+
 				Spline.WriteSpline(writer, spline);
 			}
 		}
