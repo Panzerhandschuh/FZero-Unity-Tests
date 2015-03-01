@@ -16,7 +16,6 @@ public class DebugHelper : MonoBehaviour
 	{
 		GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		obj.transform.position = position;
-		obj.transform.localScale = new Vector3(2f, 2f, 2f);
 		return obj;
 	}
 
