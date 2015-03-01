@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.IO;
 
-public class Spline : MonoBehaviour
+// Information about track splines
+// Editing some of these properties will change the in game collisions
+public class FZSpline : MonoBehaviour
 {
 	public int address;
 	public float trackOffset1; // Moves the track collisions forward/back?
@@ -20,12 +22,13 @@ public class Spline : MonoBehaviour
 	public byte flag3; // Always seems to be 0
 	public byte flag4; // Always seems to be 0
 
-	public static Spline LoadSpline(BinaryReader reader, int offset)
+	public static FZSpline LoadSpline(BinaryReader reader, int offset)
 	{
 		GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		//GameObject end = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		obj.tag = "Spline";
-		Spline spline = obj.AddComponent<Spline>();
+		obj.transform.localScale = new Vector3(2f, 2f, 2f);
+		obj.renderer.material.color = Color.yellow;
+		obj.tag = "FZSpline";
+		FZSpline spline = obj.AddComponent<FZSpline>();
 
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to spline info
 		spline.address = (int)reader.BaseStream.Position;
@@ -53,13 +56,13 @@ public class Spline : MonoBehaviour
 		obj.transform.position = (spline.start + spline.end) / 2f;
 		Debug.DrawLine(obj.transform.position, spline.start, Color.green, 999f);
 		Debug.DrawLine(obj.transform.position, spline.end, Color.green, 999f);
-		Debug.DrawRay(obj.transform.position, spline.startTangent, Color.white, 999f);
-		Debug.DrawRay(obj.transform.position, spline.endTangent, Color.white, 999f);
+		Debug.DrawRay(obj.transform.position, spline.startTangent * 2f, Color.white, 999f);
+		Debug.DrawRay(obj.transform.position, spline.endTangent * 2f, Color.white, 999f);
 
 		return spline;
 	}
 
-	public static void WriteSpline(BinaryWriter writer, Spline spline)
+	public static void WriteSpline(BinaryWriter writer, FZSpline spline)
 	{
 		writer.BaseStream.Seek(spline.address, SeekOrigin.Begin);
 		BinarySerializer.Write(writer, spline.trackOffset1);

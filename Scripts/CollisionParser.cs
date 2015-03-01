@@ -4,10 +4,13 @@ using System.IO;
 
 public class CollisionParser : MonoBehaviour
 {
+	public int courseNumber = 3;
 	public bool readMeshCollisions = true;
+	public bool readObjectCollisions = true;
 	public bool readObjects = true;
 	public bool loadFromOutput = false; // Load modified course files in the output folder
-	public int courseNumber = 3;
+
+	public bool displayVertices = true;
 
 	const int TABLE_ENTRY_SIZE = 16;
 	const int SPLINE_ENTRY_SIZE = 12;
@@ -28,15 +31,21 @@ public class CollisionParser : MonoBehaviour
 			ReadSplineTable(reader, splineTableSize, splineTableOffset);
 
 			// Read main mesh data
-			reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about mesh offset table
-			int tableSize = BinarySerializer.ReadInt32(reader);
-			int tableOffset = BinarySerializer.ReadInt32(reader);
-			ReadMeshTable(reader, tableSize, tableOffset);
+			if (readMeshCollisions)
+			{
+				reader.BaseStream.Seek(100, SeekOrigin.Begin); // Seek to header info about mesh offset table
+				int tableSize = BinarySerializer.ReadInt32(reader);
+				int tableOffset = BinarySerializer.ReadInt32(reader);
+				ReadMeshCollisionTable(reader, tableSize, tableOffset);
+			}
 
-			// Read extra mesh data (boost pads, heal regions, jump pads, misc collisions)
-			reader.BaseStream.Seek(28, SeekOrigin.Begin); // Seek to header info about extra mesh offset table
-			int extraTableOffset = BinarySerializer.ReadInt32(reader);
-			ReadMeshExtraTable(reader, extraTableOffset);
+			// Read object collision data (boost pads, heal regions, jump pads, misc collisions)
+			if (readObjectCollisions)
+			{
+				reader.BaseStream.Seek(28, SeekOrigin.Begin); // Seek to header info about extra mesh offset table
+				int extraTableOffset = BinarySerializer.ReadInt32(reader);
+				ReadObjectCollisionTable(reader, extraTableOffset);
+			}
 
 			// Read unknown data (0x10)
 			//reader.BaseStream.Seek(16, SeekOrigin.Begin); // Seek to header info about unknown data table
@@ -72,12 +81,12 @@ public class CollisionParser : MonoBehaviour
 			reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip unknown data
 
 			int splineOffset = BinarySerializer.ReadInt32(reader);
-			Spline spline = Spline.LoadSpline(reader, splineOffset);
+			FZSpline spline = FZSpline.LoadSpline(reader, splineOffset);
 		}
 	}
 
 	// Read table containing triangle and quad meshes
-	void ReadMeshTable(BinaryReader reader, int numEntries, int offset)
+	void ReadMeshCollisionTable(BinaryReader reader, int numEntries, int offset)
 	{
 		print("Number of Mesh Table Entries: " + numEntries);
 		print("Mesh Table Offset: " + offset);
@@ -122,10 +131,10 @@ public class CollisionParser : MonoBehaviour
 		reader.BaseStream.Seek(startOffset, SeekOrigin.Begin);
 	}
 
-	// Read the mesh table that contains offsets to triangle and quad meshes (boost pads, heal/dirt regions, misc collisions)
-	void ReadMeshExtraTable(BinaryReader reader, int offset)
+	// Read the object collision table that contains offsets to triangle and quad meshes (boost pads, heal/dirt regions, misc collisions)
+	void ReadObjectCollisionTable(BinaryReader reader, int offset)
 	{
-		print("Extra Mesh Table Offset: " + offset);
+		print("Object Collision Table Offset: " + offset);
 
 		// Read triangle meshes
 		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to start of extra mesh table
@@ -165,27 +174,14 @@ public class CollisionParser : MonoBehaviour
 		print("Number of Object Table Entries: " + numEntries);
 		print("Object Table Offset: " + offset);
 
-		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to start of object table
-
 		for (int i = 0; i < numEntries; i++)
 		{
-			reader.BaseStream.Seek(12, SeekOrigin.Current); // Skip 12 unknown bytes
-
-			Vector3 pos = BinarySerializer.ReadVector(reader);
-			DebugHelper.CreateVertex(pos, new Vector3(5f, 5f, 5f), Color.red);
-
-			reader.BaseStream.Seek(24, SeekOrigin.Current); // Skip 24 unknown bytes
-			int extraInfoOffset = BinarySerializer.ReadInt32(reader);
-			if (extraInfoOffset != 0)
-				ReadObjectExtraInfo(reader, extraInfoOffset);
-
-			reader.BaseStream.Seek(8, SeekOrigin.Current); // Skip 8 unknown bytes
-			int orientationOffset = BinarySerializer.ReadInt32(reader);
-			ReadObjectOrientation(reader, pos, orientationOffset);
+			int objectOffset = offset + (OBJECT_ENTRY_SIZE * i);
+			FZObject fzObject = FZObject.LoadObject(reader, objectOffset);
 		}
 	}
 
-	// Unknown info about the object
+	// Unknown info about the object (first entry is in course03 0x0000EB8C)
 	void ReadObjectExtraInfo(BinaryReader reader, int offset)
 	{
 		//print("Object Extra Info Offset: " + offset);
@@ -209,7 +205,7 @@ public class CollisionParser : MonoBehaviour
 		reader.BaseStream.Seek(startOffset, SeekOrigin.Begin);
 	}
 
-	// A list of unknown items related to the object info
+	// A list of unknown items related to the extra object info
 	void ReadObjectExtraItems(BinaryReader reader, int numEntries, int offset)
 	{
 		//print(numEntries + " " + offset);
@@ -225,33 +221,6 @@ public class CollisionParser : MonoBehaviour
 			Vector3 v = BinarySerializer.ReadVector(reader);
 			//CreateVertex(v, new Vector3(5f, 5f, 5f), Color.green);
 		}
-
-		// Restore stream position
-		reader.BaseStream.Seek(startOffset, SeekOrigin.Begin);
-	}
-
-	// The rotation of the objects?
-	void ReadObjectOrientation(BinaryReader reader, Vector3 position, int offset)
-	{
-		// Store stream position
-		long startOffset = reader.BaseStream.Position;
-
-		reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to object orientation data
-
-		Vector3 v1 = BinarySerializer.ReadVector(reader).normalized;
-		Debug.DrawRay(position, v1 * 5f, Color.yellow, 999f);
-
-		reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip 4 unknown bytes
-
-		Vector3 v2 = BinarySerializer.ReadVector(reader).normalized;
-		Debug.DrawRay(position, v2 * 5f, Color.yellow, 999f);
-
-		reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip 4 unknown bytes
-
-		Vector3 v3 = BinarySerializer.ReadVector(reader).normalized;
-		Debug.DrawRay(position, v3 * 5f, Color.yellow, 999f);
-
-		//reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip 4 unknown bytes
 
 		// Restore stream position
 		reader.BaseStream.Seek(startOffset, SeekOrigin.Begin);
@@ -280,10 +249,19 @@ public class CollisionParser : MonoBehaviour
 
 		using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Open)))
 		{
-			GameObject[] splines = GameObject.FindGameObjectsWithTag("Spline");
+			// Save objects (untested)
+			GameObject[] objs = GameObject.FindGameObjectsWithTag("FZObject");
+			for (int i = 0; i < objs.Length; i++)
+			{
+				FZObject obj = objs[i].GetComponent<FZObject>();
+				FZObject.WriteObject(writer, obj);
+			}
+
+			// Save splines
+			GameObject[] splines = GameObject.FindGameObjectsWithTag("FZSpline");
 			for (int i = 0; i < splines.Length; i++)
 			{
-				Spline spline = splines[i].GetComponent<Spline>();
+				FZSpline spline = splines[i].GetComponent<FZSpline>();
 
 				// Track offset?
 				//spline.trackOffset1 += 50f;
@@ -301,7 +279,7 @@ public class CollisionParser : MonoBehaviour
 				//spline.startConnected = 1;
 				//spline.endConnected = 1;
 
-				Spline.WriteSpline(writer, spline);
+				FZSpline.WriteSpline(writer, spline);
 			}
 		}
 
