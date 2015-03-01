@@ -6,6 +6,7 @@ public class CollisionParser : MonoBehaviour
 {
 	public bool readMeshCollisions = true;
 	public bool readObjects = true;
+	public bool loadFromOutput = false; // Load modified course files in the output folder
 	public int courseNumber = 3;
 
 	const int TABLE_ENTRY_SIZE = 16;
@@ -16,7 +17,8 @@ public class CollisionParser : MonoBehaviour
 
 	void Start()
 	{
-		string filePath = "Assets\\Input\\COLI_COURSE" + courseNumber.ToString("00") +",lz";
+		string folder = (loadFromOutput) ? "Output" : "Input";
+		string filePath = "Assets\\" + folder + "\\COLI_COURSE" + courseNumber.ToString("00") + ",lz";
 		using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
 		{
 			// Read spline data
@@ -270,11 +272,37 @@ public class CollisionParser : MonoBehaviour
 	public void SaveChanges()
 	{
 		string filePath = "Assets\\Output\\COLI_COURSE" + courseNumber.ToString("00") + ",lz";
+		if (!File.Exists(filePath))
+		{
+			string inputFilePath = "Assets\\Input\\COLI_COURSE" + courseNumber.ToString("00") + ",lz";
+			File.Copy(inputFilePath, filePath);
+		}
+
 		using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Open)))
 		{
 			GameObject[] splines = GameObject.FindGameObjectsWithTag("Spline");
 			for (int i = 0; i < splines.Length; i++)
-				Spline.WriteSpline(writer, splines[i].GetComponent<Spline>());
+			{
+				Spline spline = splines[i].GetComponent<Spline>();
+
+				// Track offset?
+				//spline.trackOffset1 += 50f;
+				//spline.trackOffset2 += 50f;
+
+				// Make tracks entirely straight?
+				//spline.trackOffset1 = 0f;
+				//spline.trackOffset1 = 0f;
+
+				// Rotates track?
+				//spline.startTangent = Quaternion.Euler(20f, 0f, 0f) * spline.startTangent;
+				//spline.endTangent = Quaternion.Euler(20f, 0f, 0f) * spline.endTangent;
+
+				// Connect gaps (seems to only affect checkpoint system loading the player right on the edge of gaps)
+				//spline.startConnected = 1;
+				//spline.endConnected = 1;
+
+				Spline.WriteSpline(writer, spline);
+			}
 		}
 
 		print("Changes have been saved");
