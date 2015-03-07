@@ -70,7 +70,9 @@ public class FZObject : MonoBehaviour
 		BinarySerializer.Write(writer, obj.unknown7);
 		BinarySerializer.Write(writer, obj.orientationOffset);
 
-		FZOrientation.WriteOrientation(writer, obj.GetComponent<FZOrientation>());
+		FZOrientation orientation = obj.GetComponent<FZOrientation>();
+		if (orientation != null)
+			FZOrientation.WriteOrientation(writer, orientation);
 	}
 }
 

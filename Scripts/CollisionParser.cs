@@ -263,6 +263,10 @@ public class CollisionParser : MonoBehaviour
 			{
 				FZSpline spline = splines[i].GetComponent<FZSpline>();
 
+				// Checkpoint position?
+				//spline.start += new Vector3(200f, 200f, 200f);
+				//spline.end += new Vector3(200f, 200f, 200f);
+
 				// Track offset?
 				//spline.trackOffset1 += 50f;
 				//spline.trackOffset2 += 50f;

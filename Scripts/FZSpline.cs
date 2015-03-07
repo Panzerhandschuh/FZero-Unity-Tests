@@ -8,10 +8,10 @@ public class FZSpline : MonoBehaviour
 	public int address;
 	public float trackOffset1; // Moves the track collisions forward/back?
 	public float trackOffset2; // Moves the track collisions forward/back?
-	public float unknown3;
+	public float unknown3; // This is related to collisions
 	public Vector3 startTangent; // Rotating the tangent affects the collisions
 	public Vector3 start; // Changing this does not change collisions, but it affects what parts of the track kill you (maybe related to activating checkpoints)
-	public float unknown4;
+	public float unknown4; // This is related to collisions
 	public Vector3 endTangent; // Rotating the tangent affects the collisions
 	public Vector3 end; // Changing this does not change collisions, but it affects what parts of the track kill you (maybe related to activating checkpoints)
 	public float unknown5; // Messes with CPU AI, but does not affect collisions
