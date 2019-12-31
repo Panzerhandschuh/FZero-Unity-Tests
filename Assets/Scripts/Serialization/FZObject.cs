@@ -22,11 +22,11 @@ namespace FZeroGXEditor.Serialization
 
 		public static FZObject LoadObject(BinaryReader reader, int offset)
 		{
-			GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.localScale = new Vector3(3f, 3f, 3f);
 			obj.GetComponent<Renderer>().material.color = Color.red;
 			obj.tag = "FZObject";
-			FZObject fzObject = obj.AddComponent<FZObject>();
+			var fzObject = obj.AddComponent<FZObject>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to object info
 			fzObject.address = (int)reader.BaseStream.Position;
@@ -72,7 +72,7 @@ namespace FZeroGXEditor.Serialization
 			BinarySerializer.Write(writer, obj.unknown7);
 			BinarySerializer.Write(writer, obj.orientationOffset);
 
-			FZOrientation orientation = obj.GetComponent<FZOrientation>();
+			var orientation = obj.GetComponent<FZOrientation>();
 			if (orientation != null)
 				FZOrientation.WriteOrientation(writer, orientation);
 		}
@@ -91,7 +91,7 @@ namespace FZeroGXEditor.Serialization
 
 		public static FZOrientation LoadOrientation(GameObject obj, BinaryReader reader, int offset)
 		{
-			FZOrientation fzOrientation = obj.AddComponent<FZOrientation>();
+			var fzOrientation = obj.AddComponent<FZOrientation>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to object orientation info
 			fzOrientation.address = (int)reader.BaseStream.Position;

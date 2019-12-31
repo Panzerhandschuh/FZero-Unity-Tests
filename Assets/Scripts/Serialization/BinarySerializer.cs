@@ -13,14 +13,14 @@ namespace FZeroGXEditor.Serialization
 
 		public static int ReadInt32(BinaryReader reader)
 		{
-			byte[] bytes = reader.ReadBytes(4);
+			var bytes = reader.ReadBytes(4);
 			Array.Reverse(bytes); // Swap endianness
 			return BitConverter.ToInt32(bytes, 0);
 		}
 
 		public static float ReadSingle(BinaryReader reader)
 		{
-			byte[] bytes = reader.ReadBytes(4);
+			var bytes = reader.ReadBytes(4);
 			Array.Reverse(bytes); // Swap endianness
 			return BitConverter.ToSingle(bytes, 0);
 		}
@@ -34,14 +34,14 @@ namespace FZeroGXEditor.Serialization
 
 		public static void Write(BinaryWriter writer, int value)
 		{
-			byte[] bytes = BitConverter.GetBytes(value);
+			var bytes = BitConverter.GetBytes(value);
 			Array.Reverse(bytes);
 			writer.Write(bytes);
 		}
 
 		public static void Write(BinaryWriter writer, float value)
 		{
-			byte[] bytes = BitConverter.GetBytes(value);
+			var bytes = BitConverter.GetBytes(value);
 			Array.Reverse(bytes);
 			writer.Write(bytes);
 		}

@@ -15,14 +15,14 @@ namespace FZeroGXEditor.Utilities
 		// Used for visualizing vertices
 		public static GameObject CreateVertex(Vector3 position)
 		{
-			GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.position = position;
 			return obj;
 		}
 
 		public static GameObject CreateVertex(Vector3 position, Vector3 scale, Color color)
 		{
-			GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.position = position;
 			obj.transform.localScale = scale;
 			obj.GetComponent<Renderer>().material.color = color;
@@ -32,7 +32,7 @@ namespace FZeroGXEditor.Utilities
 
 		public static void DrawText(string text, Vector3 position)
 		{
-			GameObject obj = (GameObject)GameObject.Instantiate(instance.debugText);
+			var obj = (GameObject)GameObject.Instantiate(instance.debugText);
 			obj.transform.position = position;
 			obj.GetComponent<TextMesh>().text = text;
 		}

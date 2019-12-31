@@ -26,11 +26,11 @@ namespace FZeroGXEditor.Serialization
 
 		public static FZSpline LoadSpline(BinaryReader reader, int offset)
 		{
-			GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.localScale = new Vector3(2f, 2f, 2f);
 			obj.GetComponent<Renderer>().material.color = Color.yellow;
 			obj.tag = "FZSpline";
-			FZSpline spline = obj.AddComponent<FZSpline>();
+			var spline = obj.AddComponent<FZSpline>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to spline info
 			spline.address = (int)reader.BaseStream.Position;

@@ -73,7 +73,7 @@ namespace FZeroGXEditor.Editor
 			// Mouse look
 			if (mouseLookEnabled)
 			{
-				float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivity;
+				var rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivity;
 
 				rotationY += Input.GetAxis("Mouse Y") * sensitivity;
 				rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
@@ -96,12 +96,12 @@ namespace FZeroGXEditor.Editor
 			}
 			if (Input.GetKey(KeyCode.LeftArrow))
 			{
-				float rotationX = transform.localEulerAngles.y - lookSpeed * Time.deltaTime;
+				var rotationX = transform.localEulerAngles.y - lookSpeed * Time.deltaTime;
 				transform.eulerAngles = new Vector3(-rotationY, rotationX, 0);
 			}
 			if (Input.GetKey(KeyCode.RightArrow))
 			{
-				float rotationX = transform.localEulerAngles.y + lookSpeed * Time.deltaTime;
+				var rotationX = transform.localEulerAngles.y + lookSpeed * Time.deltaTime;
 				transform.eulerAngles = new Vector3(-rotationY, rotationX, 0);
 			}
 
