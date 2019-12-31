@@ -4,7 +4,7 @@ using System.IO;
 namespace FZeroGXEditor.Serialization
 {
 	// Object info for things like scenary, boost pad effects, mines, jump plates, etc
-	public class FZObject : MonoBehaviour
+	public class FZObjectOld : MonoBehaviour
 	{
 		public int address;
 		public int unknown1;
@@ -20,13 +20,13 @@ namespace FZeroGXEditor.Serialization
 		public int unknown7; // Always 0?
 		public int orientationOffset; // Offset to orientation info
 
-		public static FZObject LoadObject(BinaryReader reader, int offset)
+		public static FZObjectOld LoadObject(BinaryReader reader, int offset)
 		{
 			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.localScale = new Vector3(3f, 3f, 3f);
 			obj.GetComponent<Renderer>().material.color = Color.red;
 			obj.tag = "FZObject";
-			var fzObject = obj.AddComponent<FZObject>();
+			var fzObject = obj.AddComponent<FZObjectOld>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to object info
 			fzObject.address = (int)reader.BaseStream.Position;
@@ -48,12 +48,12 @@ namespace FZeroGXEditor.Serialization
 
 			obj.transform.position = fzObject.position;
 			if (fzObject.orientationOffset != 0)
-				FZOrientation.LoadOrientation(obj, reader, fzObject.orientationOffset);
+				FZOrientationOld.LoadOrientation(obj, reader, fzObject.orientationOffset);
 
 			return fzObject;
 		}
 
-		public static void WriteObject(BinaryWriter writer, FZObject obj)
+		public static void WriteObject(BinaryWriter writer, FZObjectOld obj)
 		{
 			writer.BaseStream.Seek(obj.address, SeekOrigin.Begin);
 			BinarySerializer.Write(writer, obj.unknown1);
@@ -72,14 +72,14 @@ namespace FZeroGXEditor.Serialization
 			BinarySerializer.Write(writer, obj.unknown7);
 			BinarySerializer.Write(writer, obj.orientationOffset);
 
-			var orientation = obj.GetComponent<FZOrientation>();
+			var orientation = obj.GetComponent<FZOrientationOld>();
 			if (orientation != null)
-				FZOrientation.WriteOrientation(writer, orientation);
+				FZOrientationOld.WriteOrientation(writer, orientation);
 		}
 	}
 
 	// Orientation info associated with all FZObjects
-	public class FZOrientation : MonoBehaviour
+	public class FZOrientationOld : MonoBehaviour
 	{
 		public int address;
 		public Vector3 right; // Forward and right vectors might be switched (unconfirmed)
@@ -89,9 +89,9 @@ namespace FZeroGXEditor.Serialization
 		public Vector3 forward;
 		public float positionZ; // Z position of the object/orientation vectors
 
-		public static FZOrientation LoadOrientation(GameObject obj, BinaryReader reader, int offset)
+		public static FZOrientationOld LoadOrientation(GameObject obj, BinaryReader reader, int offset)
 		{
-			var fzOrientation = obj.AddComponent<FZOrientation>();
+			var fzOrientation = obj.AddComponent<FZOrientationOld>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to object orientation info
 			fzOrientation.address = (int)reader.BaseStream.Position;
@@ -112,7 +112,7 @@ namespace FZeroGXEditor.Serialization
 			return fzOrientation;
 		}
 
-		public static void WriteOrientation(BinaryWriter writer, FZOrientation orientation)
+		public static void WriteOrientation(BinaryWriter writer, FZOrientationOld orientation)
 		{
 			writer.BaseStream.Seek(orientation.address, SeekOrigin.Begin);
 			BinarySerializer.Write(writer, orientation.right);

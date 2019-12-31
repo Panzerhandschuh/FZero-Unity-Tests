@@ -5,7 +5,7 @@ namespace FZeroGXEditor.Serialization
 {
 	// Information about track splines
 	// Editing some of these properties will change the in game collisions
-	public class FZSpline : MonoBehaviour
+	public class CheckpointOld : MonoBehaviour
 	{
 		public int address;
 		public float trackOffset1; // Moves the track collisions forward/back?
@@ -24,13 +24,13 @@ namespace FZeroGXEditor.Serialization
 		public byte flag3; // Always seems to be 0
 		public byte flag4; // Always seems to be 0
 
-		public static FZSpline LoadSpline(BinaryReader reader, int offset)
+		public static CheckpointOld LoadSpline(BinaryReader reader, int offset)
 		{
 			var obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			obj.transform.localScale = new Vector3(2f, 2f, 2f);
 			obj.GetComponent<Renderer>().material.color = Color.yellow;
 			obj.tag = "FZSpline";
-			var spline = obj.AddComponent<FZSpline>();
+			var spline = obj.AddComponent<CheckpointOld>();
 
 			reader.BaseStream.Seek(offset, SeekOrigin.Begin); // Go to spline info
 			spline.address = (int)reader.BaseStream.Position;
@@ -64,7 +64,7 @@ namespace FZeroGXEditor.Serialization
 			return spline;
 		}
 
-		public static void WriteSpline(BinaryWriter writer, FZSpline spline)
+		public static void WriteSpline(BinaryWriter writer, CheckpointOld spline)
 		{
 			writer.BaseStream.Seek(spline.address, SeekOrigin.Begin);
 			BinarySerializer.Write(writer, spline.trackOffset1);

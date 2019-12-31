@@ -84,7 +84,7 @@ namespace FZeroGXEditor.Serialization
 				reader.BaseStream.Seek(4, SeekOrigin.Current); // Skip unknown data
 
 				var splineOffset = BinarySerializer.ReadInt32(reader);
-				var spline = FZSpline.LoadSpline(reader, splineOffset);
+				var spline = CheckpointOld.LoadSpline(reader, splineOffset);
 			}
 		}
 
@@ -180,7 +180,7 @@ namespace FZeroGXEditor.Serialization
 			for (var i = 0; i < numEntries; i++)
 			{
 				var objectOffset = offset + (OBJECT_ENTRY_SIZE * i);
-				var fzObject = FZObject.LoadObject(reader, objectOffset);
+				var fzObject = FZObjectOld.LoadObject(reader, objectOffset);
 			}
 		}
 
@@ -256,15 +256,15 @@ namespace FZeroGXEditor.Serialization
 				var objs = GameObject.FindGameObjectsWithTag("FZObject");
 				for (var i = 0; i < objs.Length; i++)
 				{
-					var obj = objs[i].GetComponent<FZObject>();
-					FZObject.WriteObject(writer, obj);
+					var obj = objs[i].GetComponent<FZObjectOld>();
+					FZObjectOld.WriteObject(writer, obj);
 				}
 
 				// Save splines
 				var splines = GameObject.FindGameObjectsWithTag("FZSpline");
 				for (var i = 0; i < splines.Length; i++)
 				{
-					var spline = splines[i].GetComponent<FZSpline>();
+					var spline = splines[i].GetComponent<CheckpointOld>();
 
 					// Checkpoint position?
 					//spline.start += new Vector3(200f, 200f, 200f);
@@ -286,7 +286,7 @@ namespace FZeroGXEditor.Serialization
 					//spline.startConnected = 1;
 					//spline.endConnected = 1;
 
-					FZSpline.WriteSpline(writer, spline);
+					CheckpointOld.WriteSpline(writer, spline);
 				}
 			}
 
