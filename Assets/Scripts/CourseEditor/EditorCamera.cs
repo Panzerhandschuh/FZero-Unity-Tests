@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace FZeroGXEditor.Editor
+namespace FZeroGXEditor.CourseEditor
 {
 	public class EditorCamera : MonoBehaviour
 	{
