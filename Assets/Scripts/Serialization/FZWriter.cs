@@ -13,6 +13,12 @@ namespace FZeroGXEditor.Serialization
 			Write(value.z);
 		}
 
+		public void Write(int[] values)
+		{
+			foreach (var value in values)
+				Write(value);
+		}
+
 		public override void Write(int value)
 		{
 			var bytes = BitConverter.GetBytes(value);
@@ -27,9 +33,30 @@ namespace FZeroGXEditor.Serialization
 			Write(bytes);
 		}
 
-		public void Write(IBinarySerializable serializable)
+		public void Write(IBinarySerializable item)
 		{
-			serializable.Serialize(this);
+			item.Serialize(this);
+		}
+
+		public void WriteAtOffset(IBinarySerializable item, int offset)
+		{
+			var returnAddress = BaseStream.Position;
+			BaseStream.Seek(offset, SeekOrigin.Begin);
+
+			Write(item);
+
+			BaseStream.Seek(returnAddress, SeekOrigin.Begin);
+		}
+
+		public void WriteAtOffset(IBinarySerializable[] item, int offset)
+		{
+			var returnAddress = BaseStream.Position;
+			BaseStream.Seek(offset, SeekOrigin.Begin);
+
+			foreach (var serializable in item)
+				Write(serializable);
+
+			BaseStream.Seek(returnAddress, SeekOrigin.Begin);
 		}
 	}
 }

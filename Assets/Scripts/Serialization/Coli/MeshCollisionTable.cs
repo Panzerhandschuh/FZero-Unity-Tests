@@ -12,8 +12,7 @@ namespace FZeroGXEditor.Serialization
 		{
 			writer.Write(numEntries);
 			writer.Write(offset);
-			foreach (var entry in meshCollisionEntries)
-				writer.Write(entry);
+			writer.WriteAtOffset(meshCollisionEntries, offset);
 		}
 
 		public static MeshCollisionTable Deserialize(FZReader reader)
@@ -22,11 +21,7 @@ namespace FZeroGXEditor.Serialization
 
 			table.numEntries = reader.ReadInt32();
 			table.offset = reader.ReadInt32();
-
-			table.meshCollisionEntries = new MeshCollisionEntry[table.numEntries];
-			reader.BaseStream.Seek(table.offset, SeekOrigin.Begin); // Go to the mesh collisions table
-			for (var i = 0; i < table.numEntries; i++) // Each table entry is 16 bytes
-				table.meshCollisionEntries[i] = MeshCollisionEntry.Deserialize(reader);
+			table.meshCollisionEntries = reader.ReadArrayAtOffset(table.offset, table.numEntries, MeshCollisionEntry.Deserialize);
 
 			return table;
 		}

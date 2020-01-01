@@ -8,14 +8,11 @@ namespace FZeroGXEditor.Serialization
 		public int offset;
 		public CheckpointEntry[] checkpointEntries;
 
-		private const int checkpointEntrySize = 12;
-
 		public void Serialize(FZWriter writer)
 		{
 			writer.Write(numEntries);
 			writer.Write(offset);
-			foreach (var entry in checkpointEntries)
-				writer.Write(entry);
+			writer.WriteAtOffset(checkpointEntries, offset);
 		}
 
 		public static CheckpointTable Deserialize(FZReader reader)
@@ -24,13 +21,7 @@ namespace FZeroGXEditor.Serialization
 
 			table.numEntries = reader.ReadInt32();
 			table.offset = reader.ReadInt32();
-
-			table.checkpointEntries = new CheckpointEntry[table.numEntries];
-			for (var i = 0; i < table.numEntries; i++)
-			{
-				reader.BaseStream.Seek(table.offset + (checkpointEntrySize * i), SeekOrigin.Begin); // Go to the checkpoint list
-				table.checkpointEntries[i] = CheckpointEntry.Deserialize(reader);
-			}
+			table.checkpointEntries = reader.ReadArrayAtOffset(table.offset, table.numEntries, CheckpointEntry.Deserialize);
 
 			return table;
 		}

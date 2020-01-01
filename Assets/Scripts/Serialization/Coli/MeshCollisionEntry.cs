@@ -10,7 +10,10 @@ namespace FZeroGXEditor.Serialization
 
 		public void Serialize(FZWriter writer)
 		{
-			
+			writer.Write(unknown1);
+			writer.Write(offset);
+			if (offset != 0)
+				writer.WriteAtOffset(meshCollision, offset);
 		}
 
 		public static MeshCollisionEntry Deserialize(FZReader reader)
@@ -19,12 +22,8 @@ namespace FZeroGXEditor.Serialization
 
 			entry.unknown1 = reader.ReadBytes(12);
 			entry.offset = reader.ReadInt32();
-
 			if (entry.offset != 0)
-			{
-				reader.BaseStream.Seek(entry.offset, SeekOrigin.Begin);
-				entry.meshCollision = MeshCollision.Deserialize(reader);
-			}
+				entry.meshCollision = reader.ReadAtOffset(entry.offset, MeshCollision.Deserialize);
 
 			return entry;
 		}

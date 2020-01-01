@@ -5,7 +5,7 @@ namespace FZeroGXEditor.Serialization
 {
 	public class Checkpoint : IBinarySerializable
 	{
-		public long address;
+		public int address;
 		public float trackOffset1; // Moves the track collisions forward/back?
 		public float trackOffset2; // Moves the track collisions forward/back?
 		public float unknown3; // This is related to collisions
@@ -24,7 +24,6 @@ namespace FZeroGXEditor.Serialization
 
 		public void Serialize(FZWriter writer)
 		{
-			writer.BaseStream.Seek(address, SeekOrigin.Begin);
 			writer.Write(trackOffset1);
 			writer.Write(trackOffset2);
 			writer.Write(unknown3);
@@ -46,15 +45,15 @@ namespace FZeroGXEditor.Serialization
 		{
 			var obj = new Checkpoint();
 
-			obj.address = reader.BaseStream.Position;
+			obj.address = (int)reader.BaseStream.Position;
 			obj.trackOffset1 = reader.ReadSingle();
 			obj.trackOffset2 = reader.ReadSingle();
 			obj.unknown3 = reader.ReadSingle();
-			obj.startTangent = reader.ReadVector();
-			obj.start = reader.ReadVector();
+			obj.startTangent = reader.ReadVector3();
+			obj.start = reader.ReadVector3();
 			obj.unknown4 = reader.ReadSingle();
-			obj.endTangent = reader.ReadVector();
-			obj.end = reader.ReadVector();
+			obj.endTangent = reader.ReadVector3();
+			obj.end = reader.ReadVector3();
 			obj.unknown5 = reader.ReadSingle();
 			obj.unknown6 = reader.ReadSingle();
 			obj.width = reader.ReadSingle();
