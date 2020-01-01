@@ -12,5 +12,11 @@ namespace FZeroGXEditor.Config
 			var json = File.ReadAllText(configPath);
 			return JsonUtility.FromJson<EditorConfig>(json);
 		}
+
+		public static void SaveConfig(EditorConfig config)
+		{
+			var json = JsonUtility.ToJson(config);
+			File.WriteAllText(configPath, json);
+		}
 	}
 }
