@@ -26,7 +26,7 @@ namespace FZeroGXEditor.CourseEditor
 			LoadObjects(coliFile);
 		}
 
-		private void UnloadCourse()
+		public void UnloadCourse()
 		{
 			transform.DestroyChildren();
 		}

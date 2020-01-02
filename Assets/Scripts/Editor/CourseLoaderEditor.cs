@@ -20,6 +20,9 @@ namespace FZeroGXEditor.EditorScripts
 				courseLoader.SaveCourse();
 
 			GUILayout.EndHorizontal();
+
+			if (GUILayout.Button("Unload Course"))
+				courseLoader.UnloadCourse();
 		}
 	}
 }
