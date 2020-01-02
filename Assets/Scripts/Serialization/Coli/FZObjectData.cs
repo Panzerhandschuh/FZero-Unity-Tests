@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 namespace FZeroGXEditor.Serialization
 {
-	public class FZObject : IBinarySerializable
+	[Serializable]
+	public class FZObjectData : IBinarySerializable
 	{
 		public int address;
 		public int unknown1;
@@ -38,9 +40,9 @@ namespace FZeroGXEditor.Serialization
 			writer.WriteAtOffset(orientation, orientationOffset);
 		}
 
-		public static FZObject Deserialize(FZReader reader)
+		public static FZObjectData Deserialize(FZReader reader)
 		{
-			var obj = new FZObject();
+			var obj = new FZObjectData();
 
 			obj.address = (int)reader.BaseStream.Position;
 			obj.unknown1 = reader.ReadInt32();

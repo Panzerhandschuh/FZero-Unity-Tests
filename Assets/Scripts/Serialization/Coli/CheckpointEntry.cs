@@ -5,7 +5,7 @@
 		public int address;
 		public int unknown1;
 		public int offset;
-		public Checkpoint checkpoint;
+		public CheckpointData checkpoint;
 		public int unknownOffset;
 
 		public void Serialize(FZWriter writer)
@@ -23,7 +23,7 @@
 			entry.address = (int)reader.BaseStream.Position;
 			entry.unknown1 = reader.ReadInt32();
 			entry.offset = reader.ReadInt32();
-			entry.checkpoint = reader.ReadAtOffset(entry.offset, Checkpoint.Deserialize);
+			entry.checkpoint = reader.ReadAtOffset(entry.offset, CheckpointData.Deserialize);
 			entry.unknownOffset = reader.ReadInt32();
 
 			return entry;

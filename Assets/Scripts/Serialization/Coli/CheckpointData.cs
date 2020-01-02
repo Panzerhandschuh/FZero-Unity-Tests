@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
 using UnityEngine;
 
 namespace FZeroGXEditor.Serialization
 {
-	public class Checkpoint : IBinarySerializable
+	[Serializable]
+	public class CheckpointData : IBinarySerializable
 	{
 		public int address;
 		public float trackOffset1; // Moves the track collisions forward/back?
@@ -41,9 +42,9 @@ namespace FZeroGXEditor.Serialization
 			writer.Write(flag4);
 		}
 
-		public static Checkpoint Deserialize(FZReader reader)
+		public static CheckpointData Deserialize(FZReader reader)
 		{
-			var obj = new Checkpoint();
+			var obj = new CheckpointData();
 
 			obj.address = (int)reader.BaseStream.Position;
 			obj.trackOffset1 = reader.ReadSingle();

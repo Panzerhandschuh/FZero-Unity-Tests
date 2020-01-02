@@ -11,11 +11,11 @@ namespace FZeroGXEditor.EditorScripts
 		{
 			base.OnInspectorGUI();
 
+			var courseLoader = (CourseLoader)target;
 			if (GUILayout.Button("Load Course"))
-			{
-				var courseLoader = (CourseLoader)target;
 				courseLoader.LoadCourse();
-			}
+			else if (GUILayout.Button("Unload Course"))
+				courseLoader.UnloadCourse();
 		}
 	}
 }

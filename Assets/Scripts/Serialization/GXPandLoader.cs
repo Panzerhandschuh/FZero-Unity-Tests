@@ -47,12 +47,17 @@ namespace FZeroGXEditor.Serialization
 
 		private void MoveUnpackedFileToOutput()
 		{
+			// TODO: Re-pack file
+
+
 			var destinationDir = Path.Combine(gxRootOutputDir, "stage");
 			Directory.CreateDirectory(destinationDir);
 
-			// TODO: Re-pack file
 			var unpackedFileName = Path.GetFileName(unpackedFile).Replace(',', '.');
 			var destinationFile = Path.Combine(destinationDir, unpackedFileName);
+			if (File.Exists(destinationFile))
+				File.Delete(destinationFile);
+
 			File.Move(unpackedFile, destinationFile);
 		}
 	}

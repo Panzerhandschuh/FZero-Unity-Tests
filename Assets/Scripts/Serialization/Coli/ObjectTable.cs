@@ -4,7 +4,7 @@
 	{
 		public int numEntries;
 		public int offset;
-		public FZObject[] objects;
+		public FZObjectData[] objects;
 
 		public void Serialize(FZWriter writer)
 		{
@@ -19,7 +19,7 @@
 
 			table.numEntries = reader.ReadInt32();
 			table.offset = reader.ReadInt32();
-			table.objects = reader.ReadArrayAtOffset(table.offset, table.numEntries, FZObject.Deserialize);
+			table.objects = reader.ReadArrayAtOffset(table.offset, table.numEntries, FZObjectData.Deserialize);
 
 			return table;
 		}
