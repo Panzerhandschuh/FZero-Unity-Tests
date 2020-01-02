@@ -37,7 +37,8 @@ namespace FZeroGXEditor.Serialization
 			writer.Write(unknownOffset2);
 			writer.Write(unknown7);
 			writer.Write(orientationOffset);
-			writer.WriteAtOffset(orientation, orientationOffset);
+			if (orientationOffset != 0)
+				writer.WriteAtOffset(orientation, orientationOffset);
 		}
 
 		public static FZObjectData Deserialize(FZReader reader)
@@ -57,7 +58,8 @@ namespace FZeroGXEditor.Serialization
 			obj.unknownOffset2 = reader.ReadInt32();
 			obj.unknown7 = reader.ReadInt32();
 			obj.orientationOffset = reader.ReadInt32();
-			obj.orientation = reader.ReadAtOffset(obj.orientationOffset, FZOrientation.Deserialize);
+			if (obj.orientationOffset != 0)
+				obj.orientation = reader.ReadAtOffset(obj.orientationOffset, FZOrientation.Deserialize);
 
 			return obj;
 		}

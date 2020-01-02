@@ -77,7 +77,7 @@ namespace FZeroGXEditor.CourseEditor
 
 		private GameObject CreateObject(Type type)
 		{
-			var obj = ObjectLoader.instance.CreateObject(type);
+			var obj = ObjectLoader.Instance.CreateObject(type);
 			obj.transform.parent = courseParent.transform;
 
 			return obj;

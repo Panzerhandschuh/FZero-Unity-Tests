@@ -7,14 +7,27 @@ namespace FZeroGXEditor.Objects
 	[ExecuteInEditMode]
 	public class ObjectLoader : MonoBehaviour
 	{
-		public static ObjectLoader instance;
+		private static ObjectLoader instance;
+		public static ObjectLoader Instance
+		{
+			get
+			{
+				if (instance == null)
+				{
+					instance = FindObjectOfType<ObjectLoader>();
+					instance.Init();
+				}
+
+				return instance;
+			}
+		}
 
 		public GameObject checkpointPrefab;
 		public GameObject fzObjectPrefab;
 
 		private Dictionary<Type, GameObject> objectMap;
 
-		private void Awake()
+		private void Init()
 		{
 			instance = this;
 
