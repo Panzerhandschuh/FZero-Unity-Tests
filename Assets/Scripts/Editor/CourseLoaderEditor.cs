@@ -15,14 +15,14 @@ namespace FZeroGXEditor.EditorScripts
 
 			var courseLoader = (CourseLoader)target;
 			if (GUILayout.Button("Load Course"))
-				courseLoader.LoadCourse();
+				courseLoader.Load();
 			else if (GUILayout.Button("Save Course"))
-				courseLoader.SaveCourse();
+				courseLoader.Save();
 
 			GUILayout.EndHorizontal();
 
 			if (GUILayout.Button("Unload Course"))
-				courseLoader.UnloadCourse();
+				courseLoader.Unload();
 		}
 	}
 }
