@@ -4,7 +4,7 @@
 	{
 		public int numEntries;
 		public int offset;
-		public ObjectCollision[] objectCollisions;
+		public ObjectCollisionData[] objectCollisions;
 
 		public void Serialize(FZWriter writer)
 		{
@@ -19,7 +19,7 @@
 
 			table.numEntries = reader.ReadInt32();
 			table.offset = reader.ReadInt32();
-			table.objectCollisions = reader.ReadArrayAtOffset(table.offset, table.numEntries, ObjectCollision.Deserialize);
+			table.objectCollisions = reader.ReadArrayAtOffset(table.offset, table.numEntries, ObjectCollisionData.Deserialize);
 
 			return table;
 		}

@@ -25,6 +25,7 @@ namespace FZeroGXEditor.Objects
 		public GameObject checkpointPrefab;
 		public GameObject fzObjectPrefab;
 		public GameObject meshCollisionPrefab;
+		public GameObject objectCollisionPrefab;
 
 		private Dictionary<Type, GameObject> objectMap;
 
@@ -36,6 +37,7 @@ namespace FZeroGXEditor.Objects
 			objectMap.Add(typeof(Checkpoint), checkpointPrefab);
 			objectMap.Add(typeof(FZObject), fzObjectPrefab);
 			objectMap.Add(typeof(MeshCollision), meshCollisionPrefab);
+			objectMap.Add(typeof(ObjectCollision), objectCollisionPrefab);
 		}
 
 		public GameObject CreateObject(Type type)

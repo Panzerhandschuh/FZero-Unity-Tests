@@ -2,6 +2,7 @@
 using FZeroGXEditor.Config;
 using FZeroGXEditor.Objects;
 using FZeroGXEditor.Serialization;
+using FZeroGXEditor.Utilities;
 using UnityEngine;
 
 namespace FZeroGXEditor.CourseEditor
@@ -9,8 +10,6 @@ namespace FZeroGXEditor.CourseEditor
 	public class CourseLoader : MonoBehaviour
 	{
 		public EditorConfig config;
-
-		private GameObject courseParent;
 
 		private void Awake()
 		{
@@ -22,22 +21,14 @@ namespace FZeroGXEditor.CourseEditor
 			ConfigLoader.SaveConfig(config);
 
 			UnloadCourse();
-			CreateCourseParent();
 
 			var coliFile = LoadColiFile();
 			LoadObjects(coliFile);
 		}
 
-		private void CreateCourseParent()
-		{
-			courseParent = new GameObject();
-			courseParent.name = "Course";
-		}
-
 		public void UnloadCourse()
 		{
-			if (courseParent != null)
-				DestroyImmediate(courseParent);
+			transform.DestroyChildren();
 		}
 
 		private ColiFile LoadColiFile()
@@ -54,6 +45,7 @@ namespace FZeroGXEditor.CourseEditor
 		private void LoadObjects(ColiFile coliFile)
 		{
 			LoadCheckpoints(coliFile.checkpointTable);
+			LoadObjectCollisions(coliFile.objectCollisionTable);
 			LoadFZObjects(coliFile.objectTable);
 			LoadMeshCollisions(coliFile.meshCollisionTable);
 		}
@@ -64,6 +56,15 @@ namespace FZeroGXEditor.CourseEditor
 			{
 				var obj = CreateObject(typeof(Checkpoint));
 				obj.GetComponent<Checkpoint>().Init(entry.checkpoint);
+			}
+		}
+
+		private void LoadObjectCollisions(ObjectCollisionTable objectCollisionTable)
+		{
+			foreach (var entry in objectCollisionTable.objectCollisions)
+			{
+				var obj = CreateObject(typeof(ObjectCollision));
+				obj.GetComponent<ObjectCollision>().Init(entry);
 			}
 		}
 
@@ -91,7 +92,7 @@ namespace FZeroGXEditor.CourseEditor
 		private GameObject CreateObject(Type type)
 		{
 			var obj = ObjectLoader.Instance.CreateObject(type);
-			obj.transform.parent = courseParent.transform;
+			obj.transform.parent = transform;
 
 			return obj;
 		}

@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace FZeroGXEditor.Objects
 {
-	public class MeshCollision : MonoBehaviour
+	public class ObjectCollision : MonoBehaviour
 	{
-		public MeshCollisionData data;
+		public ObjectCollisionData data;
 
-		public void Init(MeshCollisionData data)
+		public void Init(ObjectCollisionData data)
 		{
 			this.data = data;
 		}
@@ -16,10 +16,10 @@ namespace FZeroGXEditor.Objects
 		private void OnDrawGizmos()
 		{
 			foreach (var triangle in data.triangles)
-				GizmoUtil.DrawTriangle(triangle, Color.red, Color.blue);
+				GizmoUtil.DrawTriangle(triangle, new Color(1f, 0.5f, 0f), Color.blue);
 
 			foreach (var quad in data.quads)
-				GizmoUtil.DrawQuad(quad, Color.red, Color.blue);
+				GizmoUtil.DrawQuad(quad, new Color(1f, 0.25f, 0f), Color.blue);
 		}
 	}
 }

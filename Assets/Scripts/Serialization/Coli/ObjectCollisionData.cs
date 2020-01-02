@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace FZeroGXEditor.Serialization
 {
-	public class ObjectCollision : IBinarySerializable
+	[Serializable]
+	public class ObjectCollisionData : IBinarySerializable
 	{
 		public int address;
 		public byte[] unknown1;
@@ -31,9 +33,9 @@ namespace FZeroGXEditor.Serialization
 			writer.WriteAtOffset(quads, startQuadOffset);
 		}
 
-		public static ObjectCollision Deserialize(FZReader reader)
+		public static ObjectCollisionData Deserialize(FZReader reader)
 		{
-			var table = new ObjectCollision();
+			var table = new ObjectCollisionData();
 
 			table.address = (int)reader.BaseStream.Position;
 			table.unknown1 = reader.ReadBytes(36);
