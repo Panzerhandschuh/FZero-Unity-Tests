@@ -26,7 +26,7 @@ namespace FZeroGXEditor.CourseEditor
 			LoadObjects(coliFile);
 		}
 
-		public void UnloadCourse()
+		private void UnloadCourse()
 		{
 			transform.DestroyChildren();
 		}
@@ -95,6 +95,13 @@ namespace FZeroGXEditor.CourseEditor
 			obj.transform.parent = transform;
 
 			return obj;
+		}
+
+		public void SaveCourse()
+		{
+			var coursePath = GetCoursePath();
+
+			throw new NotImplementedException();
 		}
 
 		private string GetCoursePath()
