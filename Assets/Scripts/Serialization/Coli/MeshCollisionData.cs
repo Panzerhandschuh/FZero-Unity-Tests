@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
 
 namespace FZeroGXEditor.Serialization
 {
-	public class MeshCollision : IBinarySerializable
+	[Serializable]
+	public class MeshCollisionData : IBinarySerializable
 	{
+		public int address;
 		public byte[] unknown1;
 		public int numTriangles;
 		public int numQuads;
@@ -23,10 +25,11 @@ namespace FZeroGXEditor.Serialization
 			writer.WriteAtOffset(quads, quadsOffset);
 		}
 
-		public static MeshCollision Deserialize(FZReader reader)
+		public static MeshCollisionData Deserialize(FZReader reader)
 		{
-			var obj = new MeshCollision();
+			var obj = new MeshCollisionData();
 
+			obj.address = (int)reader.BaseStream.Position;
 			obj.unknown1 = reader.ReadBytes(20);
 			obj.numTriangles = BinarySerializer.ReadInt32(reader);
 			obj.numQuads = BinarySerializer.ReadInt32(reader);

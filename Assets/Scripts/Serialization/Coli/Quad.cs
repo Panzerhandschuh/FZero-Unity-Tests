@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FZeroGXEditor.Serialization
 {
+	[Serializable]
 	public class Quad : IBinarySerializable
 	{
 		public int address;
@@ -32,9 +34,9 @@ namespace FZeroGXEditor.Serialization
 			obj.unknown1 = reader.ReadInt32();
 			obj.normal = reader.ReadVector3();
 			obj.vertex1 = reader.ReadVector3();
-			obj.vertex1 = reader.ReadVector3();
-			obj.vertex1 = reader.ReadVector3();
-			obj.vertex1 = reader.ReadVector3();
+			obj.vertex2 = reader.ReadVector3();
+			obj.vertex3 = reader.ReadVector3();
+			obj.vertex4 = reader.ReadVector3();
 			obj.unknown2 = reader.ReadBytes(48);
 
 			return obj;

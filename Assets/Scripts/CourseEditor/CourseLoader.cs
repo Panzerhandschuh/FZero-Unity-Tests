@@ -55,23 +55,36 @@ namespace FZeroGXEditor.CourseEditor
 		{
 			LoadCheckpoints(coliFile.checkpointTable);
 			LoadFZObjects(coliFile.objectTable);
+			LoadMeshCollisions(coliFile.meshCollisionTable);
 		}
 
 		private void LoadCheckpoints(CheckpointTable checkpointTable)
 		{
-			foreach (var checkpointEntry in checkpointTable.checkpointEntries)
+			foreach (var entry in checkpointTable.checkpointEntries)
 			{
 				var obj = CreateObject(typeof(Checkpoint));
-				obj.GetComponent<Checkpoint>().Init(checkpointEntry.checkpoint);
+				obj.GetComponent<Checkpoint>().Init(entry.checkpoint);
 			}
 		}
 
 		private void LoadFZObjects(ObjectTable objectTable)
 		{
-			foreach (var objectData in objectTable.objects)
+			foreach (var entry in objectTable.objects)
 			{
 				var obj = CreateObject(typeof(FZObject));
-				obj.GetComponent<FZObject>().Init(objectData);
+				obj.GetComponent<FZObject>().Init(entry);
+			}
+		}
+
+		private void LoadMeshCollisions(MeshCollisionTable meshCollisionTable)
+		{
+			foreach (var entry in meshCollisionTable.meshCollisionEntries)
+			{
+				if (entry.meshCollision != null)
+				{
+					var obj = CreateObject(typeof(MeshCollision));
+					obj.GetComponent<MeshCollision>().Init(entry.meshCollision);
+				}
 			}
 		}
 

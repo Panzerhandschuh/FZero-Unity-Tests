@@ -1,5 +1,4 @@
-﻿using System;
-using FZeroGXEditor.Serialization;
+﻿using FZeroGXEditor.Serialization;
 using UnityEngine;
 
 namespace FZeroGXEditor.Objects

@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace FZeroGXEditor.Serialization
 {
+	[Serializable]
 	public class Triangle : IBinarySerializable
 	{
 		public int address;
