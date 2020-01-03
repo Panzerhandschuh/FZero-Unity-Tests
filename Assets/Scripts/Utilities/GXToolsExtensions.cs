@@ -2,7 +2,7 @@
 
 namespace FZeroGXEditor.Utilities
 {
-	public static class VectorUtil
+	public static class GXToolsExtensions
 	{
 		public static Vector3 ToUnityVector(this FZeroGXTools.Serialization.Vector3 vector)
 		{
