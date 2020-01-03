@@ -3,12 +3,14 @@ using FZeroGXEditor.Objects;
 using FZeroGXTools.Serialization;
 using FZeroGXEditor.Utilities;
 using UnityEngine;
+using System.IO;
 
 namespace FZeroGXEditor.CourseEditor
 {
 	public class CollisionLoader : MonoBehaviour, ILoader
 	{
 		private Course course;
+		private ColiFile coliFile;
 
 		public void Load(Course course)
 		{
@@ -16,7 +18,7 @@ namespace FZeroGXEditor.CourseEditor
 
 			Unload();
 
-			var coliFile = LoadColiFile();
+			coliFile = LoadColiFile();
 			LoadCollisionData(coliFile);
 		}
 
@@ -29,7 +31,7 @@ namespace FZeroGXEditor.CourseEditor
 		{
 			var coursePath = GetCoursePath();
 
-			using (var loader = new GXPandLoader(coursePath))
+			using (var loader = new LZUnpacker(coursePath))
 			using (var reader = new FZReader(loader.GetStream()))
 			{
 				return ColiFile.Deserialize(reader);
@@ -94,8 +96,13 @@ namespace FZeroGXEditor.CourseEditor
 		public void Save()
 		{
 			var coursePath = GetCoursePath();
-
-			throw new NotImplementedException();
+			using (var stream = File.OpenWrite(coursePath))
+			using (var writer = new FZWriter(stream))
+			{
+				writer.Write(coliFile);
+			}
+			
+			LZPacker.Pack(coursePath);
 		}
 
 		private string GetCoursePath()
