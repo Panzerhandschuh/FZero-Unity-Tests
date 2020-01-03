@@ -1,5 +1,5 @@
 # FZeroGXEditor
-Course editor for F-Zero GX
+![F-Zero GX Course Editor](editor.png)
 
 This editor reads and displays all of the info in a coli file that we understand currently. There is a save feature that will update the coli file with updated values changed from Unity's inspector. Currently, only checkpoint and object edits are saved.
 
