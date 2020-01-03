@@ -1,8 +1,7 @@
-﻿using FZeroGXEditor.CourseEditor;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace FZeroGXEditor.EditorScripts
+namespace FZeroGXEditor.CourseEditor
 {
 	[CustomEditor(typeof(CourseLoader))]
 	public class CourseLoaderEditor : Editor
