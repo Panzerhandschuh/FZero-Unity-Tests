@@ -1,4 +1,5 @@
-﻿using FZeroGXEditor.Serialization;
+﻿using FZeroGXEditor.Utilities;
+using FZeroGXTools.Serialization;
 using UnityEngine;
 
 namespace FZeroGXEditor.Objects
@@ -13,18 +14,18 @@ namespace FZeroGXEditor.Objects
 		{
 			this.data = data;
 
-			start.position = data.start;
-			end.position = data.end;
+			start.position = data.start.ToUnityVector();
+			end.position = data.end.ToUnityVector();
 		}
 
 		private void OnDrawGizmos()
 		{
 			Gizmos.color = Color.green;
-			Gizmos.DrawLine(data.start, data.end);
+			Gizmos.DrawLine(data.start.ToUnityVector(), data.end.ToUnityVector());
 
 			Gizmos.color = Color.white;
-			Gizmos.DrawRay(data.start, data.startTangent * 2f);
-			Gizmos.DrawRay(data.end, data.endTangent * 2f);
+			Gizmos.DrawRay(data.start.ToUnityVector(), data.startTangent.ToUnityVector() * 2f);
+			Gizmos.DrawRay(data.end.ToUnityVector(), data.endTangent.ToUnityVector() * 2f);
 		}
 	}
 }

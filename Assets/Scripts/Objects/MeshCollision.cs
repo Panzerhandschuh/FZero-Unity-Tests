@@ -1,4 +1,4 @@
-﻿using FZeroGXEditor.Serialization;
+﻿using FZeroGXTools.Serialization;
 using FZeroGXEditor.Utilities;
 using UnityEngine;
 

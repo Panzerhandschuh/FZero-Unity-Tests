@@ -1,4 +1,5 @@
-﻿using FZeroGXEditor.Serialization;
+﻿using FZeroGXEditor.Utilities;
+using FZeroGXTools.Serialization;
 using UnityEngine;
 
 namespace FZeroGXEditor.Objects
@@ -11,14 +12,14 @@ namespace FZeroGXEditor.Objects
 		{
 			this.data = data;
 
-			transform.position = data.position;
+			transform.position = data.position.ToUnityVector();
 			if (data.orientation != null)
 				InitOrientation(data.orientation);
 		}
 
 		private void InitOrientation(FZOrientation orientation)
 		{
-			transform.rotation = Quaternion.LookRotation(orientation.forward, orientation.up);
+			transform.rotation = Quaternion.LookRotation(orientation.forward.ToUnityVector(), orientation.up.ToUnityVector());
 		}
 
 		private void OnDrawGizmos()
@@ -31,11 +32,11 @@ namespace FZeroGXEditor.Objects
 		private void DrawOrientation(FZOrientation orientation)
 		{
 			Gizmos.color = Color.red;
-			Gizmos.DrawRay(transform.position, orientation.right * 3f);
+			Gizmos.DrawRay(transform.position, orientation.right.ToUnityVector() * 3f);
 			Gizmos.color = Color.green;
-			Gizmos.DrawRay(transform.position, orientation.up * 3f);
+			Gizmos.DrawRay(transform.position, orientation.up.ToUnityVector() * 3f);
 			Gizmos.color = Color.blue;
-			Gizmos.DrawRay(transform.position, orientation.forward * 3f);
+			Gizmos.DrawRay(transform.position, orientation.forward.ToUnityVector() * 3f);
 		}
 	}
 }

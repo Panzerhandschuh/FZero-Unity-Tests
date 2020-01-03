@@ -1,7 +1,7 @@
 ﻿using System;
 using FZeroGXEditor.Config;
 using FZeroGXEditor.Objects;
-using FZeroGXEditor.Serialization;
+using FZeroGXTools.Serialization;
 using FZeroGXEditor.Utilities;
 using UnityEngine;
 
@@ -30,7 +30,7 @@ namespace FZeroGXEditor.CourseEditor
 		{
 			var coursePath = GetCoursePath();
 
-			using (var loader = new GXPandLoader(coursePath, config.gxRootOutputDir))
+			using (var loader = new GXPandLoader(coursePath))
 			using (var reader = new FZReader(loader.GetStream()))
 			{
 				return ColiFile.Deserialize(reader);
