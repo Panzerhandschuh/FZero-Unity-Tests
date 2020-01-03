@@ -1,10 +1,8 @@
-﻿using FZeroGXEditor.Config;
-
-namespace FZeroGXEditor.CourseEditor
+﻿namespace FZeroGXEditor.CourseEditor
 {
 	public interface ILoader
 	{
-		void Load(EditorConfig config);
+		void Load(Course course);
 		void Unload();
 		void Save();
 	}

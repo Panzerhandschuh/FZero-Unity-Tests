@@ -1,5 +1,4 @@
 ﻿using System;
-using FZeroGXEditor.Config;
 using FZeroGXEditor.Objects;
 using FZeroGXTools.Serialization;
 using FZeroGXEditor.Utilities;
@@ -9,11 +8,11 @@ namespace FZeroGXEditor.CourseEditor
 {
 	public class CollisionLoader : MonoBehaviour, ILoader
 	{
-		private EditorConfig config;
+		private Course course;
 
-		public void Load(EditorConfig config)
+		public void Load(Course course)
 		{
-			this.config = config;
+			this.course = course;
 
 			Unload();
 
@@ -101,8 +100,8 @@ namespace FZeroGXEditor.CourseEditor
 
 		private string GetCoursePath()
 		{
-			var courseNumberStr = ((int)config.course).ToString("D2");
-			return $@"{config.gxRootInputDir}\stage\COLI_COURSE{courseNumberStr}.lz";
+			var courseNumberStr = ((int)course).ToString("D2");
+			return $@"{EditorConstants.gameDataDir}\stage\COLI_COURSE{courseNumberStr}.lz";
 		}
 	}
 }

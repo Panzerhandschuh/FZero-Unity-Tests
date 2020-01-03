@@ -1,23 +1,15 @@
-﻿using FZeroGXEditor.Config;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace FZeroGXEditor.CourseEditor
 {
 	public class CourseLoader : MonoBehaviour
 	{
 		public CollisionLoader collisionLoader;
-		public EditorConfig config;
-
-		private void Awake()
-		{
-			config = ConfigLoader.LoadConfig();
-		}
+		public Course course;
 
 		public void Load()
 		{
-			ConfigLoader.SaveConfig(config);
-
-			collisionLoader.Load(config);
+			collisionLoader.Load(course);
 		}
 
 		public void Unload()
